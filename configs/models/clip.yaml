@@ -3,18 +3,27 @@ includes:
 - ../news_clippings.yaml
 
 dataset_config:
-  foil:
+  news_clippings:
     use_images: true
     use_features: false
     return_features_info: false
     option: semantics_clip_text_image
+    # The default path is relative to ~/.cache/torch/mmf/data/datasets
+    # An absolute path can be defined with a backslash
     annotations:
       train:
-      - data/${dataset_config.foil.option}/train.json
+      - news_clippings/data/${dataset_config.news_clippings.option}/train.json
       val:
-      - data/${dataset_config.foil.option}/val.json
+      - news_clippings/${dataset_config.news_clippings.option}/val.json
       test:
-      - data/${dataset_config.foil.option}/test.json
+      - news_clippings/${dataset_config.news_clippings.option}/test.json
+    images:
+      train:
+      - visual_news/origin
+      val:
+      - visual_news/origin
+      test:
+      - visual_news/origin
     processors:
       text_processor:
         type: clip_tokenizer
