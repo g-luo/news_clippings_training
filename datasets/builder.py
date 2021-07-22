@@ -1,13 +1,13 @@
 from mmf.common.registry import registry
 from mmf.datasets.mmf_dataset_builder import MMFDatasetBuilder
-from foil_mmf.foil.datasets.foil import FOILDataset
+from news_clippings_training.datasets.news_clippings import NewsCLIPpingsDataset
 
-@registry.register_builder("foil")
-class FOILBuilder(MMFDatasetBuilder):
+@registry.register_builder("news_clippings")
+class NewsCLIPpingsBuilder(MMFDatasetBuilder):
 		def __init__(
 			self, 
-			dataset_name="foil", 
-			dataset_class=FOILDataset,
+			dataset_name="news_clippings", 
+			dataset_class=NewsCLIPpingsDataset,
 			*args, 
 			**kwargs,
 		):
@@ -15,4 +15,4 @@ class FOILBuilder(MMFDatasetBuilder):
 	
 		@classmethod
 		def config_path(cls):
-			return "configs/experiments/datasets/foil.yaml"
+			return "configs/news_clippings.yaml"

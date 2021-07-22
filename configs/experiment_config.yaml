@@ -1,0 +1,27 @@
+optimizer:
+  type: adam_w
+  params:
+    lr: 5e-5
+    eps: 1e-8
+
+scheduler:
+  type: warmup_linear
+  params:
+    num_warmup_steps: 2000
+    num_training_steps: 22000
+
+evaluation:
+  metrics:
+  - accuracy
+
+training:
+  seed: 2
+  tensorboard: true
+  # about batch of size 16 on single GPU with 16GB
+  # each hive gpu is about 12 GB
+  batch_size: 32
+  lr_scheduler: true
+  # Don't forget to update schedule_attributes if you update this
+  max_updates: ${scheduler.params.num_training_steps}
+  find_unused_parameters: true
+  verbose_dump: true

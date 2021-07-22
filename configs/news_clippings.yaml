@@ -1,0 +1,56 @@
+dataset_config:
+  foil:
+    data_dir: ${env.data_dir}/datasets
+    use_images: false
+    use_features: true
+    return_features_info: true
+    dataset: news
+    # option: same_semantics
+    # extra: clip_text_text
+    # annotations:
+    #   train:
+    #   - foil/defaults/annotations/visualnews_foil/${dataset_config.foil.option}/${dataset_config.foil.extra}/train.json
+    #   val:
+    #   - foil/defaults/annotations/visualnews_foil/${dataset_config.foil.option}/${dataset_config.foil.extra}/val.json
+    #   test:
+    #   - foil/defaults/annotations/visualnews_foil/${dataset_config.foil.option}/${dataset_config.foil.extra}/test.json
+    features:
+      train:
+      - /shared/g-luo/visual_news_metadata/features
+      val:
+      - /shared/g-luo/visual_news_metadata/features
+      test:
+      - /shared/g-luo/visual_news_metadata/features
+    images:
+      train:
+      - /shared/g-luo/visual_news/origin
+      val:
+      - /shared/g-luo/visual_news/origin
+      test:
+      - /shared/g-luo/visual_news/origin
+    processors:
+      text_processor:
+        type: bert_tokenizer
+        params:
+          tokenizer_config:
+            type: bert-base-uncased
+            params:
+              do_lower_case: true
+          mask_probability: 0
+          max_seq_length: 128
+      image_processor:
+        type: torchvision_transforms
+        params:
+          transforms:
+            - type: Resize
+              params:
+                size: [256, 256]
+            - type: CenterCrop
+              params:
+                size: [224, 224]
+            - ToTensor
+            - GrayScaleTo3Channels
+            - type: Normalize
+              params:
+                mean: [0.485, 0.456, 0.406]
+                std: [0.12221994, 0.12145835, 0.14380469]

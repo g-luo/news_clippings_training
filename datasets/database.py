@@ -4,7 +4,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-class FOILAnnotationDatabase(AnnotationDatabase):
+class NewsCLIPpingsAnnotationDatabase(AnnotationDatabase):
 
   def load_annotation_db(self, path: str):
     self.data = json.load(open(path))['annotations']
