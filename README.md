@@ -23,13 +23,14 @@ Run inference in the main `news_clippings_training/` folder. Make sure `checkpoi
 export resource_path="<path to our finetuned models>"
 export model="clip"
 export dataset="semantics_clip_text_image"
+```
+```
 MMF_USER_DIR="." \
   nohup mmf_predict config="${resource_path}/${model}/${dataset}_${model}/config.yaml" \
   model=clip \
   dataset=news_clippings \
   run_type=test \
   checkpoint.resume_file="${resource_path}/${model}/${dataset}_${model}/test.ckpt" \
-  env.save_dir=predictions/${dataset}/${dataset}_${model} \
   checkpoint.resume_pretrained=False \
   > ${dataset}_${model}.out &
 ```
