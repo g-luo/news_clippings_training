@@ -1,2 +1,9 @@
-**._*
-**.DS_Store
+*.DS_Store
+*._*
+*.out
+*.json
+*.pkl
+*.pth
+*.ckpt
+*runs
+*__pycache__

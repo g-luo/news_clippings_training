@@ -62,12 +62,14 @@ class NewsCLIPpingsDataset(MMFDataset):
 			current_sample["image_path"] = self.get_image_path(sample_info)
 			current_sample.image = self.image_db.from_path(current_sample["image_path"])["images"][0]
 
-		target = sample_info["falsified"]
+		# TODO(g-luo): Create a script to hydrate the data.
+		# target = sample_info["falsified"]
+		target = sample_info["foil"]
 		current_sample.targets = torch.tensor(int(target), dtype=torch.long)
 		
 		return current_sample
 
-	def get_image_path(self, image_id: str):
+	def get_image_path(self, sample_info):
 		"""
 		Please note that only jpg images are currently supported.
 		"""

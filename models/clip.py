@@ -7,20 +7,27 @@ from mmf.modules.layers import MLPClassifer
 import news_clippings_training.models.CLIP.clip as clip
 from news_clippings_training.models.utils import get_optimizer_parameters_custom, freeze_optimizer_parameters_clip
 
+EMBEDDING_DIMS = {"RN101": (512, 512), "ViT-B/32": (512, 512), "RN50": (1024, 1024)}
+REMAPPING = {"vitb32": "ViT-B/32", "rn101": "RN101", "rn50": "RN50"}
+
 @registry.register_model("clip")
 class CLIP(BaseModel):
 
 	def build(self):
-		clip_model_type = self.config.get("clip_model_type", 'ViT-B/32')
+		clip_model_type = self.config.get("clip_model_type")
+		if clip_model_type not in REMAPPING.values():
+			clip_model_type = REMAPPING[clip_model_type]
 		self.model, _ = clip.load(clip_model_type, device="cuda", jit=False)
 		print(f"Using CLIP model type {clip_model_type}")
+
 		# Do this since original model is fp16
 		self.model = self.model.float()
 		self.model.config = self.config
 
-		hidden_size = self.config.text_embedding_dim + self.config.image_embedding_dim
-		
 		freeze_optimizer_parameters_clip(self.config, self.model)
+		
+		text_embedding_dim, image_embedding_dim = EMBEDDING_DIMS[clip_model_type]
+		hidden_size = self.config.get("text_embedding_dim", text_embedding_dim) + self.config.get("image_embedding_dim", image_embedding_dim)
 		self.model.classifier = MLPClassifer (
 				hidden_size, 
 				self.config.num_labels,
