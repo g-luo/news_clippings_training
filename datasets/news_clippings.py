@@ -63,8 +63,7 @@ class NewsCLIPpingsDataset(MMFDataset):
       current_sample.image = self.image_db.from_path(current_sample["image_path"])["images"][0]
 
     # TODO(g-luo): Create a script to hydrate the data.
-    # target = sample_info["falsified"]
-    target = sample_info.get("foil", None)
+    target = sample_info.get("falsified", None)
     # mismatch a sample wp 0.5
     if not target:
       if np.random.uniform() < 0.5:
