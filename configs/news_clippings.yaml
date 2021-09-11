@@ -34,6 +34,7 @@ optimizer:
 # Typically one Nvidia GPU with 12212MiB
 # can handle a batch size of 16
 training:
+  seed: 2
   batch_size: 16
 
 evaluation:

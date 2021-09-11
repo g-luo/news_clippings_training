@@ -5,7 +5,7 @@ To get started, install MMF. Here we provide suggested versions of MMF, torch, a
 ```
   git clone https://github.com/facebookresearch/mmf
   cd mmf
-  git checkout 08f062ef8cc605eed4a5dba729899c1cfc88a23b
+  git checkout 7fa7607d299a644158dc3104247e58a30e4b42ab
   pip install --editable .
 
   pip install torch==1.7.1+cu101 torchvision==0.8.2+cu101 -f https://download.pytorch.org/whl/torch_stable.html
@@ -58,14 +58,5 @@ Run training in the main `news_clippings_training/` folder using `train.sh`.
 Run inference in the main `news_clippings_training/` folder using `test.sh`.
 
 Make sure `checkpoint.resume_pretrained` is set to False otherwise MMF will try to continue training your model during inference. To output predictions by sample run `mmf_predict`, else just output the accuracy with `mmf_run`.
-
-## TODO
-- [ x ] Add base configs
-- [ x ] Add model code
-- [ x ] Update dataset code
-- [ x ] Add README with info about file location, annotation structure
-- [ x ] Add paper configs / weights
-- [ ] Add script for populating annotations and image paths based on VisualNews
-- [ ] Add VisualBERT setup
 
 

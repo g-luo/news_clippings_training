@@ -7,3 +7,4 @@
 *.ckpt
 *runs
 *__pycache__
+*private*
