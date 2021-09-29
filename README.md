@@ -47,7 +47,7 @@ Set the environment variables by running `source scripts/environment.sh`.
 * `test.sh`: Default inference script.
 
 ## Reproducing Experiments
-Currently the training / inference scripts are configured to reproduce the experiments from our paper with the config files we have released. You can choose to run your own custom configs by changinng the flag to `config=configs/experiments/clip.yaml`.
+Currently the training / inference scripts are configured to reproduce the experiments from our paper with the config files we have released. You can choose to run your own custom configs by changing the flag to `config=configs/experiments/clip.yaml`.
 
 You can tune hyperparameters for model fitting using the fields `optimizer`, `training`, `scheduler`. You can also modify architecture choices in `model_config`.
 
