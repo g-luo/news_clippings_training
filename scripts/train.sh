@@ -1,6 +1,6 @@
 #!/bin/bash
 MMF_USER_DIR=$PWD \
-  nohup mmf_run config=configs/experiments/clip.yaml \
+  nohup mmf_run config=configs/experiments/news_clippings.yaml \
   model=clip \
   dataset=news_clippings \
   run_type=train \

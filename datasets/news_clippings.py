@@ -11,8 +11,6 @@ class NewsCLIPpingsDataset(MMFDataset):
     # TODO(g-luo): np is currently unused
     np.random.seed(2)
 
-  # Example annotations formatting
-  # {"annotations": [sample_1, sample_2, ...]}
   def build_annotation_db(self):
     """
     Override build_image_db and build_feature_db for to implement custom versions of
@@ -29,9 +27,6 @@ class NewsCLIPpingsDataset(MMFDataset):
       self.image_db.transform = self.image_processor
 
   def __getitem__(self, idx: int):
-    # ============================================
-    #          Tokenize caption
-    # ============================================
     sample_info = self.annotation_db[idx]
     return self.create_item(sample_info, idx)
 
@@ -62,34 +57,37 @@ class NewsCLIPpingsDataset(MMFDataset):
       current_sample["image_path"] = self.get_image_path(sample_info)
       current_sample.image = self.image_db.from_path(current_sample["image_path"])["images"][0]
 
+    self.get_split_metadata(sample_info, current_sample)
+    
     # TODO(g-luo): Create a script to hydrate the data.
     target = sample_info.get("falsified", None)
-    # mismatch a sample wp 0.5
-    if not target:
-      if np.random.uniform() < 0.5:
-        target = False
-      else:
-        target = True
-        random_sample = self.get_random_sample(sample_info)
-        # swap out the caption with a foil since it's easier
-        current_sample.caption = random_sample["caption"]
-        current_sample.id = random_sample["id"]
     current_sample.image_id = sample_info["id"]
-      
     current_sample.targets = torch.tensor(int(target), dtype=torch.long)
     
     return current_sample
 
-  def get_random_sample(self, sample):
-    random_sample = np.random.choice(self.annotation_db)
-    while random_sample["id"] == sample["id"]:
-      random_sample = np.random.choice(self.annotation_db)
-    return random_sample
+  def get_split_metadata(self, sample_info, current_sample):
+    """
+      Add metadata for cross_entropy_weighted loss function and split_accuracy metric.
+    """
+    split_names = self.config.get("split_names", [])
+    split_weights = self.config.get("split_weights", [])
+    if "split" in sample_info and split_names:
+      # Add split info for split_accuracy
+      split_names = {split_name: i for i, split_name in enumerate(split_names)}
+      split_idx = split_names[sample_info["split"]]
+      current_sample.split = torch.tensor(split_idx, dtype=torch.long)
+      # Add batch weights for cross_entropy_weighted
+      if split_weights:
+        batch_weights = None
+        for weight in split_weights:
+          if weight["name"] in sample_info["split"]:
+            batch_weights = torch.tensor(weight["weight"], dtype=torch.long)
+        if batch_weights:
+          current_sample.batch_weights = batch_weights
 
   def get_image_path(self, sample_info):
-    """
-    Please note that only jpg images are currently supported.
-    """
+    # Please note that only jpg images are currently supported.
     image_path = sample_info["image_path"]
     return image_path
 
@@ -97,10 +95,10 @@ class NewsCLIPpingsDataset(MMFDataset):
     # TODO(g-luo): Implement this for VisualBERT.
     pass
 
-  # ================================================
-  #         Formatting used by mmf_predict
-  # ================================================
   def format_for_prediction(self, report):
+    """
+      Format file for use by mmf_predict.
+    """
     output = []
     for idx, id in enumerate(report.id):
       target = report.targets[idx].item()
