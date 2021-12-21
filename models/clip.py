@@ -4,7 +4,7 @@ from mmf.models import BaseModel
 from typing import Optional, Dict
 from torch import nn, Tensor
 from mmf.modules.layers import MLPClassifer
-import news_clippings_training.models.CLIP.clip as clip
+import clip
 from news_clippings_training.models.utils import get_optimizer_parameters_custom, freeze_optimizer_parameters_clip
 from collections import OrderedDict
 

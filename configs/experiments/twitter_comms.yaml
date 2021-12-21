@@ -37,12 +37,6 @@ model_config:
     freeze_lower: True
     losses:
     - type: cross_entropy
-  clip_concat: &clip_concat
-    <<: *clip
-  clip_concat_dot: &clip_concat_dot
-    <<: *clip
-  clip_mult: &clip_mult
-    <<: *clip
 
 optimizer:
   type: adam_w

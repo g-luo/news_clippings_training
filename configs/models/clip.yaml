@@ -13,7 +13,7 @@ dataset_config:
           max_seq_length: 77
 
 model_config:
-  clip:
+  clip: &clip
     # Choose RN101, ViT-B/32, ViT-B/16, RN50, RN50x16
     clip_model_type: ViT-B/32
     # Define parameters for the MLP classifier.
@@ -35,6 +35,12 @@ model_config:
     # Flag for linear probing, same as freeze_all
     linear_probe: False
     training_head_type: classification
+  clip_concat: &clip_concat
+    <<: *clip
+  clip_concat_dot: &clip_concat_dot
+    <<: *clip
+  clip_mult: &clip_mult
+    <<: *clip
 
 checkpoint:
   # Adjust the number of .ckpt files to save during training.

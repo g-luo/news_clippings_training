@@ -60,7 +60,7 @@ class NewsCLIPpingsDataset(MMFDataset):
     self.get_split_metadata(sample_info, current_sample)
     
     # TODO(g-luo): Create a script to hydrate the data.
-    target = sample_info.get("falsified", None)
+    target = sample_info.get("falsified", sample_info.get("foil", None))
     current_sample.image_id = sample_info["id"]
     current_sample.targets = torch.tensor(int(target), dtype=torch.long)
     
