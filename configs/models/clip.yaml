@@ -1,3 +1,6 @@
+# Config for training rn50x16 model using concat, concat_dot, and multiply fusion
+# To switch the clip_model_type, also switch the image_processor
+
 dataset_config:
   news_clippings:
     use_images: true
@@ -8,45 +11,40 @@ dataset_config:
         type: clip_tokenizer
         params:
           max_seq_length: 77
-      image_processor:
-        type: torchvision_transforms
-        params:
-          transforms:
-            - type: Resize
-              params:
-                size: [256, 256]
-                interpolation: 3
-            - type: CenterCrop
-              params:
-                size: [224, 224]
-            - ToTensor
-            - GrayScaleTo3Channels
 
 model_config:
-  clip:
-    # Define parameters for the MLP classifier the
-    # CLIP embeddings are fed into.
+  clip: &clip
+    # Choose RN101, ViT-B/32, ViT-B/16, RN50, RN50x16
+    clip_model_type: ViT-B/32
+    # Define parameters for the MLP classifier.
+    # mlp_input_dim, mlp_hidden_dim can also be set.
     num_labels: 2
-    mlp_hidden_dim: 512
     mlp_num_layers: 2
     mlp_dropout: 0
     mlp_act: relu
     # Apply the normal lr for the classifier and
     # lr * finetune_lr_multiplier for all other layers.
-    finetune_lr_multiplier: 1e-2
-    training_head_type: classification
-    losses:
-    - type: cross_entropy
-    # Choose whether to freeze the lower or all layers
+    finetune_lr_multiplier: 1
+    # Flags for freezing the lower or all layers
     # of CLIP but not the classifier.
     freeze_lower: False
     freeze_all: False
-    # Choose from options: vitb32, rn50, rn101.
-    clip_model_type: ${env:model}
+    # Flags for unimodal models
+    image_only: False
+    text_only: False
+    # Flag for linear probing, same as freeze_all
+    linear_probe: False
+    training_head_type: classification
+  clip_concat: &clip_concat
+    <<: *clip
+  clip_concat_dot: &clip_concat_dot
+    <<: *clip
+  clip_mult: &clip_mult
+    <<: *clip
 
 checkpoint:
   # Adjust the number of .ckpt files to save during training.
-  # max_to_keep: 1
+  max_to_keep: 1
   pretrained_state_mapping:
     model.visual: model.visual
     model.transformer: model.transformer

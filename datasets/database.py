@@ -7,7 +7,9 @@ logger = logging.getLogger(__name__)
 class NewsCLIPpingsAnnotationDatabase(AnnotationDatabase):
 
   def load_annotation_db(self, path: str):
-    self.data = json.load(open(path))['annotations']
+    self.data = json.load(open(path))
+    if "annotations" in self.data:
+    	self.data = self.data["annotations"]
 
   def __len__(self):
     return self.get_len()

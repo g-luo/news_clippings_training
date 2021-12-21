@@ -1,0 +1,44 @@
+# Config for training vitb32 model using concat fusion
+dataset_config:
+  news_clippings:
+    processors:
+      image_processor:
+        type: torchvision_transforms
+        params:
+          transforms:
+            - type: Resize
+              params:
+                size: [256, 256]
+                interpolation: 3
+            - type: CenterCrop
+              params:
+                size: [224, 224]
+            - ToTensor
+            - GrayScaleTo3Channels
+
+model_config:
+  clip:
+    clip_model_type: ViT-B/32
+    finetune_lr_multiplier: 1e-02
+    losses:
+    - type: cross_entropy
+
+optimizer:
+  type: adam_w
+  params:
+    lr: 5e-5
+    eps: 1e-8
+  allow_unused_parameters: True
+
+training:
+  batch_size: 16
+  
+evaluation:
+  metrics:
+  - accuracy
+
+scheduler:
+  type: warmup_linear
+  params:
+    num_warmup_steps: 4000
+    num_training_steps: 44000

@@ -1,0 +1,65 @@
+# Config for training rn50x16 model using concat, concat_dot, and multiply fusion
+dataset_config:
+  news_clippings:
+    split_names:
+      - cross_topic_random
+      - climate_random
+      - climate_hard
+      - covid_random
+      - covid_hard
+      - military_random
+      - military_hard
+    target_names:
+      - pristine
+      - falsified
+    processors:
+      image_processor:
+        type: torchvision_transforms
+        params:
+          transforms:
+            - type: Resize
+              params:
+                size:
+                  - 384
+                interpolation: 3
+            - type: CenterCrop
+              params:
+                size:
+                  - 384
+            - ToTensor
+            - GrayScaleTo3Channels
+
+model_config:
+  clip: &clip
+    clip_model_type: RN50x16
+    finetune_lr_multiplier: 1e-03
+    mlp_num_layers: 1
+    freeze_lower: True
+    losses:
+    - type: cross_entropy
+
+optimizer:
+  type: adam_w
+  params:
+    lr: 5e-5
+    eps: 1e-8
+  allow_unused_parameters: True
+
+training:
+  batch_size: 32
+
+# Print per class and split accuracies during val
+evaluation:
+  metrics:
+  - type: accuracy
+  - type: split_accuracy
+    params:
+      split_key: split
+      split_names: ${dataset_config.news_clippings.split_names}
+      target_names: ${dataset_config.news_clippings.target_names}
+
+scheduler:
+  type: warmup_linear
+  params:
+    num_warmup_steps: 4000
+    num_training_steps: 44000

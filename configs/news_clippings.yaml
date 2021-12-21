@@ -24,25 +24,16 @@ dataset_config:
       test:
       - visual_news/origin
 
-optimizer:
-  type: adam_w
-  params:
-    lr: 5e-5
-    eps: 1e-8
-  allow_unused_parameters: True
-
 # Typically one Nvidia GPU with 12212MiB
 # can handle a batch size of 16
 training:
   seed: 2
   batch_size: 16
-
-evaluation:
-  metrics:
-  - accuracy
-
-scheduler:
-  type: warmup_linear
-  params:
-    num_warmup_steps: 4000
-    num_training_steps: 44000
+  max_updates: ${scheduler.params.num_training_steps}
+  # Use wandb logging. Please see for more info
+  # in website/docs/notes/logging.md under the main MMF repo
+  # tensorboard: false
+  # wandb: 
+  #   enabled: true
+  #   wandb_projectname: ${env:wandb_projectname}
+  #   wandb_runname: ${env:split}_${env:model}
